@@ -43,6 +43,9 @@ void extjs_start(void);
 
 void vue_init(void);
 
+/* Phone-first UI at /mobile/ (files in src/webui/static/mobile). */
+void mobile_init(void);
+
 size_t html_escaped_len(const char *src);
 const char* html_escape(char *dst, const char *src, size_t len);
 

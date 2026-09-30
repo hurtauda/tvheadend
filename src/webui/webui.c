@@ -86,6 +86,61 @@ is_client_simple(http_connection_t *hc)
 }
 
 /**
+ * Phone browsers. Browsers put a "Mobi" token in the user agent of phones
+ * (the check MDN recommends), while tablets leave it out and so keep the
+ * full UI. Chromium's Sec-CH-UA-Mobile hint (sent to secure origins only)
+ * answers directly when present; both follow "Request desktop site".
+ */
+static int
+is_client_phone(http_connection_t *hc)
+{
+  const char *s;
+
+  if((s = http_arg_get(&hc->hc_args, "Sec-CH-UA-Mobile")) != NULL)
+    return strcmp(s, "?1") == 0;
+  s = http_arg_get(&hc->hc_args, "User-Agent");
+  return s != NULL && strstr(s, "Mobi") != NULL;
+}
+
+/**
+ * Whether the request carries cookie `name` with the given value.
+ */
+static int
+http_cookie_is(http_connection_t *hc, const char *name, const char *value)
+{
+  const char *c = http_arg_get(&hc->hc_args, "Cookie");
+  size_t nl = strlen(name), vl = strlen(value);
+
+  while (c != NULL) {
+    while (*c == ' ' || *c == ';')
+      c++;
+    if (strncmp(c, name, nl) == 0 && c[nl] == '=') {
+      /* The first one wins: browsers send the most specific path first. */
+      c += nl + 1;
+      return strncmp(c, value, vl) == 0 &&
+             (c[vl] == '\0' || c[vl] == ';' || c[vl] == ' ');
+    }
+    c = strchr(c, ';');
+  }
+  return 0;
+}
+
+/**
+ * A phone asked for the desktop UI: the mobile UI's "Desktop version" link
+ * goes to /?ui=desktop and remembers the choice in the tvh_ui cookie (the
+ * desktop UI's "Mobile UI" link forgets it again). The ui argument is
+ * dropped here so that it is not passed on to the UI.
+ */
+static int
+page_root_wants_desktop(http_connection_t *hc)
+{
+  const char *ui = http_arg_get_remove(&hc->hc_req_args, "ui");
+
+  return (ui != NULL && strcmp(ui, "desktop") == 0) ||
+         http_cookie_is(hc, "tvh_ui", "desktop");
+}
+
+/**
  *
  */
 static const char *
@@ -106,8 +161,14 @@ page_playlist_authpath(int urlauth)
 static int
 page_root(http_connection_t *hc, const char *remain, void *opaque)
 {
+  int desktop = page_root_wants_desktop(hc);
+
   if(is_client_simple(hc)) {
     http_redirect(hc, "simple.html", &hc->hc_req_args, 0);
+  } else if(!desktop && is_client_phone(hc)) {
+    /* Phones get the phone-first UI (src/webui/mobile.c); it links to the
+     * desktop UI for everything else. */
+    http_redirect(hc, "/mobile/", &hc->hc_req_args, 0);
   } else {
 #if ENABLE_VUE_UI
     /* Default desktop UI is the Vue interface at /gui (it is bundled in
@@ -286,6 +347,8 @@ page_static_file_maxage(http_connection_t *hc, const char *_remain,
       content = "text/html; charset=UTF-8";
     else if(!strcmp(postfix, "css"))
       content = "text/css; charset=UTF-8";
+    else if(!strcmp(postfix, "webmanifest"))
+      content = "application/manifest+json; charset=UTF-8";
     else if(!strcmp(postfix, "git"))
       nogzip = 1;
     else if(!strcmp(postfix, "jpg") || !strcmp(postfix, "png")) {
@@ -2892,6 +2955,7 @@ webui_init(int xspf)
   comet_init();
   webui_api_init();
   vue_init();
+  mobile_init();
 }
 
 void

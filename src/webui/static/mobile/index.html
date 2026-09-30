@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!--
+  SPDX-License-Identifier: GPL-3.0-or-later
+  Copyright (C) 2026 Tvheadend contributors
+
+  Tvheadend mobile UI: a small, dependency-free app for phones and tablets,
+  served at {webroot}/mobile/ by src/webui/mobile.c. app.js talks to the
+  regular JSON API and the comet long-poll channel; every server URL is
+  derived from this page's location, so the app works behind a webroot.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: http: https:; media-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#181c21" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tvheadend">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Tvheadend</title>
+<link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="app.css">
+<!-- Same translation catalog as the other web UIs (sets tvh_locale). -->
+<script src="../redir/locale.js"></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-now" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="13" rx="2"/><path d="M8 21h8M12 17.5V21"/></symbol>
+  <symbol id="i-guide" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M7 13.5h4M7 17h7"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></symbol>
+  <symbol id="i-rec" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5" fill="currentColor"/></symbol>
+  <symbol id="i-series" viewBox="0 0 24 24"><circle cx="9" cy="12" r="6"/><circle cx="9" cy="12" r="2.2" fill="currentColor"/><path d="M15 6.6a6 6 0 0 1 0 10.8M18.5 4.5a8.7 8.7 0 0 1 0 15"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5" fill="currentColor"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-prev" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.35-5.65"/><path d="M20 4v5h-5"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10 11v5.5M14 11v5.5"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-login" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 8l4 4-4 4M14 12H3"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M16 8l4 4-4 4M20 12H9"/></symbol>
+</svg>
+
+<header class="appbar">
+  <h1 id="title" class="appbar-title">Tvheadend</h1>
+  <button type="button" id="btn-refresh" class="icon-btn" data-i18n-label="Refresh" aria-label="Refresh"><svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg></button>
+  <button type="button" id="btn-menu" class="icon-btn" data-i18n-label="Settings" aria-label="Settings" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#i-more"/></svg></button>
+</header>
+
+<main id="main" tabindex="-1">
+  <noscript><p class="empty">This interface needs JavaScript.</p></noscript>
+</main>
+
+<nav class="tabbar" data-i18n-label="Main navigation" aria-label="Main navigation">
+  <a href="#/now" data-tab="now"><svg class="icon" aria-hidden="true"><use href="#i-now"/></svg><span data-i18n="Now">Now</span></a>
+  <a href="#/guide" data-tab="guide"><svg class="icon" aria-hidden="true"><use href="#i-guide"/></svg><span data-i18n="Guide">Guide</span></a>
+  <a href="#/search" data-tab="search"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span data-i18n="Search">Search</span></a>
+  <a href="#/dvr" data-tab="dvr" hidden><svg class="icon" aria-hidden="true"><use href="#i-rec"/></svg><span data-i18n="Recordings">Recordings</span></a>
+</nav>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- Overlays; their content is built by app.js. -->
+<dialog id="sheet" class="sheet" aria-labelledby="sheet-title"></dialog>
+<dialog id="player" class="player" aria-labelledby="player-title"></dialog>
+<dialog id="confirm" class="confirm" role="alertdialog" aria-labelledby="confirm-text"></dialog>
+</body>
+</html>

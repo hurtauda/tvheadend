@@ -360,6 +360,7 @@ SRCS-2 += \
 	src/webui/comet.c \
 	src/webui/extjs.c \
 	src/webui/vue.c \
+	src/webui/mobile.c \
 	src/webui/simpleui.c \
 	src/webui/statedump.c \
 	src/webui/html.c \

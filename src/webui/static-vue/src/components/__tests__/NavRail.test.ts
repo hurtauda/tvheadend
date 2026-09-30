@@ -164,6 +164,24 @@ describe('NavRail — section grouping', () => {
       expect(group.text()).not.toContain('Classic UI')
     }
   })
+
+  it('renders Mobile UI as a plain external anchor to /mobile/, outside any group', async () => {
+    accessStub.has.mockImplementation(() => true)
+    const wrapper = await mountRail()
+
+    const mobile = wrapper
+      .findAll('a.nav-item')
+      .find((a) => a.text().includes('Mobile UI'))
+    expect(mobile).toBeTruthy()
+    /* Full-page navigation to the server-served mobile UI, not an
+     * in-app route. The trailing slash keeps its relative assets
+     * resolving below /mobile/; `ui=mobile` makes it drop a remembered
+     * "desktop UI" choice, so the server root opens it again on phones. */
+    expect(mobile!.attributes('href')).toBe('/mobile/?ui=mobile')
+    for (const group of wrapper.findAll('[role="group"]')) {
+      expect(group.text()).not.toContain('Mobile UI')
+    }
+  })
 })
 
 /*

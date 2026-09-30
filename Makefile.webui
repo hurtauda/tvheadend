@@ -174,6 +174,12 @@ JAVASCRIPT_TV += $(ROOTPATH)/app/i18n.js
 JAVASCRIPT_TV += $(ROOTPATH)/tv.js
 
 #
+# mobile UI (served as-is from static/mobile; listed for string extraction)
+#
+
+JAVASCRIPT_MOBILE = $(ROOTPATH)/mobile/app.js
+
+#
 # real source paths
 #
 
@@ -299,7 +305,7 @@ compile-debug: $(WEBDIR)/extjs-debug.c $(WEBDIR)/extjs-tv-debug.c
 .PHONY: intl
 intl:
 	@printf "Building intl/js/tvheadend.js.pot\n"
-	@$(XGETTEXT2) -o intl/js/tvheadend.js.pot.new $(filter-out $(WEBDIR)/$(MARKED),$(JAVASCRIPT_SRC))
+	@$(XGETTEXT2) -o intl/js/tvheadend.js.pot.new $(filter-out $(WEBDIR)/$(MARKED),$(JAVASCRIPT_SRC)) $(WEBDIR)/$(JAVASCRIPT_MOBILE)
 	@sed -e 's/^"Language: /"Language: en/' < intl/js/tvheadend.js.pot.new > intl/js/tvheadend.js.pot
 
 intl/js/tvheadend.js.pot:

@@ -13,6 +13,7 @@ import {
   Info,
   House,
   ExternalLink,
+  Smartphone,
   LogIn,
   LogOut,
   PanelLeftClose,
@@ -90,10 +91,11 @@ interface Blueprint {
   /* Internal SPA route — resolved against the router for its path and
    * meta.permission. Mutually exclusive with `href`. */
   routeName?: string
-  /* External, non-SPA destination (the legacy ExtJS UI). Rendered as a
-   * plain anchor: a full-page navigation OUT of the Vue app, not a
-   * router push. No permission gate — the target enforces its own ACL
-   * server-side (`/extjs.html` is ACCESS_WEB_INTERFACE, extjs.c:242). */
+  /* External, non-SPA destination (the legacy ExtJS UI, the mobile UI).
+   * Rendered as a plain anchor: a full-page navigation OUT of the Vue
+   * app, not a router push. No permission gate — the target enforces its
+   * own ACL server-side (`/extjs.html` is ACCESS_WEB_INTERFACE,
+   * extjs.c:242; `/mobile` likewise, mobile.c). */
   href?: string
   label: string
   icon: LucideIcon
@@ -133,10 +135,17 @@ const NAV_SECTIONS: NavSection[] = [
 /* Shown below the sections without a header — About is general
  * information, neither everyday-use nor administration (ADR 0016).
  * Classic UI follows it: a full-page jump to the legacy ExtJS
- * interface, available while both UIs ship side by side. */
+ * interface, available while both UIs ship side by side. Mobile UI is
+ * the same kind of jump to the phone-first interface at /mobile/
+ * (src/webui/static/mobile) — most useful from the phone drawer. Phones
+ * land there from the server root unless they picked the desktop UI;
+ * `?ui=mobile` tells the mobile UI to forget that choice, since the user
+ * just picked it again. */
 const NAV_UNGROUPED: Blueprint[] = [
   { routeName: 'about', label: t('About'), icon: Info },
   { href: serverUrl('extjs.html'), label: t('Classic UI'), icon: ExternalLink },
+  /* i18n: new string */
+  { href: serverUrl('mobile/?ui=mobile'), label: t('Mobile UI'), icon: Smartphone },
 ]
 
 /*
